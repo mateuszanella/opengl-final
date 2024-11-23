@@ -19,8 +19,13 @@ public:
 
 	void Draw3DSGrid(float width, float length);
 	void DrawAxis();
+
 	void DrawFloor();
 	void DrawHouse(float X, float Y, float Rotation);
+
+	void CreateSkyBox(float x, float y, float z,
+		float width, float height, float length,
+		CTexture* pTextures);
 private:
 
 	bool	keys[256];		// Array usado para rotinas do teclado

@@ -30,9 +30,15 @@ CScene2::CScene2()
 	fTimerPosY = 0.0f;
 	fRenderPosY = 0.0f;
 
-	// Carrega todas as texturas
 	pTextures = new CTexture();
-	pTextures->CreateTextureClamp(0, "../Scene2/BaseFloor.bmp");
+	pTextures->CreateTextureClamp(0, "../Scene2/skybox/ny.png");
+	pTextures->CreateTextureClamp(1, "../Scene2/skybox/py.png");
+	pTextures->CreateTextureClamp(2, "../Scene2/skybox/pz.png");
+	pTextures->CreateTextureClamp(3, "../Scene2/skybox/nz.png");
+	pTextures->CreateTextureClamp(4, "../Scene2/skybox/nx.png");
+	pTextures->CreateTextureClamp(5, "../Scene2/skybox/px.png");
+
+	pTextures->CreateTextureClamp(6, "../Scene2/BaseFloor.bmp");
 
 	pModel3DS_BaseHouse = new CModel_3DS();
 	pModel3DS_BaseHouse->Load("../Scene2/BaseHouse.3DS");
@@ -100,6 +106,8 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	
 
+	GLfloat fogColor[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//                               DESENHA OS OBJETOS DA CENA (INÍCIO)
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +115,22 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 
 	glEnable(GL_TEXTURE_2D);
 
+	CreateSkyBox(0.0f, 100.0f, 0.0f,
+		1000.0f, 1000.0f, 1000.0f,
+		pTextures);
+
 	DrawFloor();
+
+	glEnable(GL_FOG);
+
+	glFogfv(GL_FOG_COLOR, fogColor);
+
+	glHint(GL_FOG_HINT, GL_NICEST);
+	glFogf(GL_FOG_START, 35.0f);
+	glFogf(GL_FOG_END, 150.0f);
+
+	glFogi(GL_FOG_MODE, GL_EXP2);
+	glFogf(GL_FOG_DENSITY, 0.025f);
 
 	DrawHouse(0.0f, 0.0f, 0.0f);
 	DrawHouse(25.0f, 20.0f, 90.0f);
@@ -310,7 +333,7 @@ void CScene2::DrawFloor()
 	glPushMatrix();
 	glTranslatef(0.0f, 0.0f, 0.0f);
 
-	pTextures->ApplyTexture(0);
+	pTextures->ApplyTexture(6);
 
 	glBegin(GL_QUADS);
 	glNormal3f(0.0f, 1.0f, 0.0f);
@@ -330,6 +353,79 @@ void CScene2::DrawHouse(float X, float Y, float Rotation)
 	glTranslatef(X, 0.0f, Y);
 	glRotatef(Rotation, 0.0f, 1.0f, 0.0f);
 	pModel3DS_BaseHouse->Draw();
+
+	glPopMatrix();
+}
+
+void CScene2::CreateSkyBox(float x, float y, float z,
+	float width, float height, float length,
+	CTexture* pTextures)
+{
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glPushMatrix();
+
+	x = x - width / 2;
+	y = y - height / 2;
+	z = z - length / 2;
+
+
+	pTextures->ApplyTexture(0);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x, y, z);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y, z);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x, y + height, z);
+	glEnd();
+
+
+	pTextures->ApplyTexture(1);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y, z + length);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y + height, z + length);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z + length);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z + length);
+	glEnd();
+
+
+	pTextures->ApplyTexture(2);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y, z);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y, z + length);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y, z + length);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z);
+	glEnd();
+
+
+	pTextures->ApplyTexture(3);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y + height, z);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y + height, z + length);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y + height, z + length);
+	glEnd();
+
+
+	pTextures->ApplyTexture(4);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y, z);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y + height, z);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x, y + height, z + length);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x, y, z + length);
+	glEnd();
+
+	pTextures->ApplyTexture(5);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y, z + length);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z + length);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
+	glEnd();
 
 	glPopMatrix();
 }
