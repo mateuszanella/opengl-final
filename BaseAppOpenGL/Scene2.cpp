@@ -42,6 +42,11 @@ CScene2::CScene2()
 
 	pModel3DS_BaseHouse = new CModel_3DS();
 	pModel3DS_BaseHouse->Load("../Scene2/BaseHouse.3DS");
+
+	LightAmbient[0]  = 0.0f; LightAmbient[1]  = 0.0f; LightAmbient[2]    = 0.0f; LightAmbient[3]  = 1.0f;
+	LightDiffuse[0]  = 0.8f; LightDiffuse[1]  = 0.8f; LightDiffuse[2]    = 1.0f; LightDiffuse[3]  = 1.0f;
+	LightSpecular[0] = 0.9f; LightSpecular[1] = 0.9f; LightSpecular[2]   = 1.0f; LightSpecular[3] = 1.0f;
+	LightPosition[0] = 0.0f; LightPosition[1] = 100.0f; LightPosition[2] = 0.0f; LightPosition[3] = 1.0f;
 }
 
 
@@ -114,6 +119,8 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_TEXTURE_2D);
+
+	SetupAmbientLight();
 
 	CreateSkyBox(0.0f, 100.0f, 0.0f,
 		1000.0f, 1000.0f, 1000.0f,
@@ -369,6 +376,18 @@ void CScene2::SetFog(float fDensity, float fStart, float fEnd)
 void CScene2::UnsetFog()
 {
 	glDisable(GL_FOG);
+}
+
+void CScene2::SetupAmbientLight()
+{
+	glEnable(GL_LIGHTING);
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
+	glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
+
+	glEnable(GL_LIGHT0);
 }
 
 void CScene2::CreateSkyBox(float x, float y, float z,

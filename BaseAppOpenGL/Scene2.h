@@ -26,6 +26,8 @@ public:
 	void SetFog(float fDensity, float fStart, float fEnd);
 	void UnsetFog();
 
+	void SetupAmbientLight();
+
 	void CreateSkyBox(float x, float y, float z,
 		float width, float height, float length,
 		CTexture* pTextures);
@@ -61,5 +63,11 @@ private:
 	float fTimerPosY;
 
 	CModel_3DS* pModel3DS_BaseHouse;
+
+	// Ambient Light
+	GLfloat LightAmbient[4];
+	GLfloat LightDiffuse[4];
+	GLfloat LightSpecular[4];
+	GLfloat LightPosition[4];
 };
 

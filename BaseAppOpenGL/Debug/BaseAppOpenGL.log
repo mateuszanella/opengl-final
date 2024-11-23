@@ -1,2 +1,6 @@
-﻿  Scene2.cpp
+﻿  Main.cpp
+C:\Users\Pichau\Desktop\AppOpenGL\BaseAppOpenGL\Main.cpp(182,3): warning C4838: conversion from 'int' to 'BYTE' requires a narrowing conversion
+  Scene2.cpp
+  SceneManager.cpp
+  Generating Code...
   BaseAppOpenGL.vcxproj -> C:\Users\Pichau\Desktop\AppOpenGL\Debug\BaseAppOpenGL.exe
