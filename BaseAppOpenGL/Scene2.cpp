@@ -10,14 +10,16 @@ CScene2::CScene2()
 	bIsWireframe = false;
 	bIsCameraFPS = true;
 
-	bShowAxis = true;
+	bShowAxis = false;
+	bDrawFog = true;
+	bDrawLightObjects = false;
 
 	iFPS = 0;
 	iFrames = 0;
 	ulLastFPS = 0;
-	szTitle[256] = 0;
+	szTitle[255] = 0;
 
-	// Cria gerenciador de impressão de texto na tela
+	// Cria gerenciador de impressï¿½o de texto na tela
 	pTexto = new CTexto();
 
 	// Cria camera
@@ -43,10 +45,21 @@ CScene2::CScene2()
 	pModel3DS_BaseHouse = new CModel_3DS();
 	pModel3DS_BaseHouse->Load("../Scene2/BaseHouse.3DS");
 
-	LightAmbient[0]  = 0.0f; LightAmbient[1]  = 0.0f; LightAmbient[2]    = 0.0f; LightAmbient[3]  = 1.0f;
-	LightDiffuse[0]  = 0.8f; LightDiffuse[1]  = 0.8f; LightDiffuse[2]    = 1.0f; LightDiffuse[3]  = 1.0f;
-	LightSpecular[0] = 0.9f; LightSpecular[1] = 0.9f; LightSpecular[2]   = 1.0f; LightSpecular[3] = 1.0f;
-	LightPosition[0] = 0.0f; LightPosition[1] = 100.0f; LightPosition[2] = 0.0f; LightPosition[3] = 1.0f;
+	FloorAmbient[0]  = 0.2f; FloorAmbient[1]  = 0.2f; FloorAmbient[2]  = 0.2f; FloorAmbient[3]  = 1.0f;
+	FloorDiffuse[0]  = 0.8f; FloorDiffuse[1]  = 0.8f; FloorDiffuse[2]  = 0.8f; FloorDiffuse[3]  = 1.0f;
+	FloorSpecular[0] = 0.0f; FloorSpecular[1] = 0.0f; FloorSpecular[2] = 0.0f; FloorSpecular[3] = 1.0f;
+	FloorShininess   = 0.0f;
+
+
+	AmbianceLightAmbient[0]  = 0.0f; AmbianceLightAmbient[1]  = 0.0f; AmbianceLightAmbient[2]    = 0.0f; AmbianceLightAmbient[3]  = 1.0f;
+	AmbianceLightDiffuse[0]  = 0.8f; AmbianceLightDiffuse[1]  = 0.8f; AmbianceLightDiffuse[2]    = 1.0f; AmbianceLightDiffuse[3]  = 1.0f;
+	AmbianceLightSpecular[0] = 0.9f; AmbianceLightSpecular[1] = 0.9f; AmbianceLightSpecular[2]   = 1.0f; AmbianceLightSpecular[3] = 1.0f;
+	AmbianceLightPosition[0] = 0.0f; AmbianceLightPosition[1] = 100.0f; AmbianceLightPosition[2] = 0.0f; AmbianceLightPosition[3] = 1.0f;
+
+	CampfireAmbient[0]  = 0.2f; CampfireAmbient[1]   = 0.1f; CampfireAmbient[2]  = 0.0f; CampfireAmbient[3]  = 1.0f;
+	CampfireDiffuse[0]  = 1.0f; CampfireDiffuse[1]   = 0.5f; CampfireDiffuse[2]  = 0.0f; CampfireDiffuse[3]  = 1.0f;
+	CampfireSpecular[0] = 1.0f; CampfireSpecular[1]  = 0.5f; CampfireSpecular[2] = 0.0f; CampfireSpecular[3] = 1.0f;
+	CampfirePosition[0] = 20.0f; CampfirePosition[1] = 0.5f; CampfirePosition[2] = 0.0f; CampfirePosition[3] = 1.0f;
 }
 
 
@@ -80,12 +93,12 @@ CScene2::~CScene2(void)
 
 
 
-int CScene2::DrawGLScene(void)	// Função que desenha a cena
+int CScene2::DrawGLScene(void)	// Funï¿½ï¿½o que desenha a cena
 {
 	// Get FPS
-	if (GetTickCount() - ulLastFPS >= 1000)	// When A Second Has Passed...
+	if (GetTickCount64() - ulLastFPS >= 1000)	// When A Second Has Passed...
 	{
-		ulLastFPS = GetTickCount();				// Update Our Time Variable
+		ulLastFPS = GetTickCount64();			// Update Our Time Variable
 		iFPS = iFrames;							// Save The FPS
 		iFrames = 0;							// Reset The FPS Counter
 	}
@@ -97,7 +110,7 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	glLoadIdentity();									// Inicializa a Modelview Matrix Atual
 
 
-	// Seta as posições da câmera
+	// Seta as posiï¿½ï¿½es da cï¿½mera
 	pCamera->setView();
 
 	if (bShowAxis) {
@@ -105,7 +118,7 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 		DrawAxis();
 	}
 
-	// Modo FILL ou WIREFRAME (pressione barra de espaço)	
+	// Modo FILL ou WIREFRAME (pressione barra de espaï¿½o)	
 	if (bIsWireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else
@@ -114,13 +127,18 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	GLfloat fogColor[] = { 0.5f, 0.5f, 0.5f, 1.0f };
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//                               DESENHA OS OBJETOS DA CENA (INÍCIO)
+	//                               DESENHA OS OBJETOS DA CENA (INï¿½CIO)
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
 
 	SetupAmbientLight();
+	SetupCampfireLight();
+
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 
 	CreateSkyBox(0.0f, 100.0f, 0.0f,
 		1000.0f, 1000.0f, 1000.0f,
@@ -145,9 +163,9 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	fTimerPosY = pTimer->GetTime() / 1000.0f;
 	fRenderPosY += 0.2f;
 
-	// Impressão de texto na tela...
-	// Muda para modo de projeção ortogonal 2D
-	// OBS: Desabilite Texturas e Iluminação antes de entrar nesse modo de projeção
+	// Impressï¿½o de texto na tela...
+	// Muda para modo de projeï¿½ï¿½o ortogonal 2D
+	// OBS: Desabilite Texturas e Iluminaï¿½ï¿½o antes de entrar nesse modo de projeï¿½ï¿½o
 	OrthoMode(0, 0, WIDTH, HEIGHT);
 
 
@@ -158,7 +176,7 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	glColor3f(1.0f, 1.0f, 0.0f);
 
 
-	glRasterPos2f(10.0f, 0.0f);	// Posicionando o texto na tela
+	glRasterPos2f(10.0f, -30.0f);	// Posicionando o texto na tela
 	if (!bIsWireframe) {
 		pTexto->glPrint("[TAB]  Modo LINE"); // Imprime texto na tela
 	}
@@ -166,23 +184,46 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 		pTexto->glPrint("[TAB]  Modo FILL");
 	}
 
+	glRasterPos2f(10.0f, -20.0f);
+	if (!bShowAxis) {
+		pTexto->glPrint("[F]    Mostrar Eixos");
+	}
+	else {
+		pTexto->glPrint("[F]    Esconder Eixos");
+	}
+
+	glRasterPos2f(10.0f, -10.0f);
+	if (!bDrawFog) {
+		pTexto->glPrint("[G]    Habilitar Fog");
+	}
+	else {
+		pTexto->glPrint("[G]    Desabilitar Fog");
+	}
+
+	glRasterPos2f(10.0f, 0.0f);
+	if (!bDrawLightObjects) {
+		pTexto->glPrint("[L]    Habilitar Objetos de Luz");
+	}
+	else {
+		pTexto->glPrint("[L]    Desabilitar Objetos de Luz");
+	}
 
 	//// Camera LookAt
 	glRasterPos2f(10.0f, 40.0f);
 	pTexto->glPrint("Player LookAt  : %f, %f, %f", pCamera->Forward[0], pCamera->Forward[1], pCamera->Forward[2]);
 
-	//// Posição do Player
+	//// Posiï¿½ï¿½o do Player
 	glRasterPos2f(10.0f, 60.0f);
 	pTexto->glPrint("Player Position: %f, %f, %f", pCamera->Position[0], pCamera->Position[1], pCamera->Position[2]);
 
-	//// Imprime o FPS da aplicação e o Timer
+	//// Imprime o FPS da aplicaï¿½ï¿½o e o Timer
 	glRasterPos2f(10.0f, 80.0f);
 	pTexto->glPrint("Frames-per-Second: %d ---- Timer: %.1f segundos", iFPS, (pTimer->GetTime()/1000));
 
 
 	glPopMatrix();
 
-	// Muda para modo de projeção perspectiva 3D
+	// Muda para modo de projeï¿½ï¿½o perspectiva 3D
 	PerspectiveMode();
 
 	return true;
@@ -193,7 +234,7 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 
 void CScene2::MouseMove(void) // Tratamento de movimento do mouse
 {
-	// Realiza os cálculos de rotação da visão do Player (através das coordenadas
+	// Realiza os cï¿½lculos de rotaï¿½ï¿½o da visï¿½o do Player (atravï¿½s das coordenadas
 	// X do mouse.
 	POINT mousePos;
 	int middleX = WIDTH >> 1;
@@ -208,7 +249,7 @@ void CScene2::MouseMove(void) // Tratamento de movimento do mouse
 	fDeltaX = (float)((middleX - mousePos.x)) / 10;
 	fDeltaY = (float)((middleY - mousePos.y)) / 10;
 
-	// Rotaciona apenas a câmera
+	// Rotaciona apenas a cï¿½mera
 	pCamera->rotateGlob(-fDeltaX, 0.0f, 1.0f, 0.0f);
 	pCamera->rotateLoc(-fDeltaY, 1.0f, 0.0f, 0.0f);
 }
@@ -244,7 +285,7 @@ void CScene2::KeyPressed(void) // Tratamento de teclas pressionadas
 	{
 		pCamera->moveGlob(0.0f, pCamera->Up[1], 0.0f);
 	}
-	// Senão, interrompe movimento do Player
+	// Senï¿½o, interrompe movimento do Player
 	else
 	{
 	}
@@ -271,6 +312,10 @@ void CScene2::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 
 	case 'G':
 		bDrawFog = !bDrawFog;
+		break;
+
+	case 'L':
+		bDrawLightObjects = !bDrawLightObjects;
 		break;
 
 	case VK_RETURN:
@@ -335,19 +380,32 @@ void CScene2::DrawFloor()
 	glPushMatrix();
 	glTranslatef(0.0f, 0.0f, 0.0f);
 
+	glMaterialfv(GL_FRONT, GL_AMBIENT, FloorAmbient);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, FloorDiffuse);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, FloorSpecular);
+	glMaterialf(GL_FRONT, GL_SHININESS, FloorShininess);
+
 	pTextures->ApplyTexture(6);
 
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-50.0f, 0.0f, 50.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(50.0f, 0.0f, 50.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(50.0f, 0.0f, -50.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-50.0f, 0.0f, -50.0f);
-	glEnd();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+	for (float i = -50.0f; i < 50.0f; i += 1.0f)
+	{
+		for (float j = -50.0f; j < 50.0f; j += 1.0f)
+		{
+			glBegin(GL_QUADS);
+			glNormal3f(0.0f, 1.0f, 0.0f);
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(i, 0.0f, j + 1);
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(i + 1, 0.0f, j + 1);
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(i + 1, 0.0f, j);
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(i, 0.0f, j);
+			glEnd();
+		}
+	}
 
 	glPopMatrix();
 }
-
 void CScene2::DrawHouse(float X, float Y, float Rotation)
 {
 	glPushMatrix();
@@ -380,15 +438,34 @@ void CScene2::UnsetFog()
 
 void CScene2::SetupAmbientLight()
 {
-	glEnable(GL_LIGHTING);
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
-	glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
-
+	glLightfv(GL_LIGHT0, GL_AMBIENT,  AmbianceLightAmbient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE,  AmbianceLightDiffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, AmbianceLightSpecular);
+	glLightfv(GL_LIGHT0, GL_POSITION, AmbianceLightPosition);
 	glEnable(GL_LIGHT0);
 }
+
+void CScene2::SetupCampfireLight()
+{
+	//if (bDrawLightObjects) {
+	//	glDisable(GL_LIGHTING);
+
+	//	glPushMatrix();
+	//	glTranslatef(CampfirePosition[0], 1.0f, CampfirePosition[2]);
+	//	glColor3f(CampfireDiffuse[0], CampfireDiffuse[1], CampfireDiffuse[2]);
+	//	glutSolidSphere(0.5f, 10, 10);
+	//	glPopMatrix();
+
+	//	glEnable(GL_LIGHTING);
+	//}
+
+	glLightfv(GL_LIGHT1, GL_AMBIENT,  CampfireAmbient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE,  CampfireDiffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, CampfireSpecular);
+	glLightfv(GL_LIGHT1, GL_POSITION, CampfirePosition);
+	glEnable(GL_LIGHT1);
+}
+
 
 void CScene2::CreateSkyBox(float x, float y, float z,
 	float width, float height, float length,

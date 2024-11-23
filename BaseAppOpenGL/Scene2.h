@@ -27,6 +27,7 @@ public:
 	void UnsetFog();
 
 	void SetupAmbientLight();
+	void SetupCampfireLight();
 
 	void CreateSkyBox(float x, float y, float z,
 		float width, float height, float length,
@@ -58,16 +59,29 @@ private:
 
 	bool bShowAxis;			// Mostra e esconde os eixos X, Y e Z
 	bool bDrawFog;			// Habilita e desabilita o efeito de neblina
+	bool bDrawLightObjects; // Habilita e desabilita a visualização dos objetos de luz
 
 	float fRenderPosY;
 	float fTimerPosY;
 
 	CModel_3DS* pModel3DS_BaseHouse;
 
+	// Floor Material
+	GLfloat FloorAmbient[4];
+	GLfloat FloorDiffuse[4];
+	GLfloat FloorSpecular[4];
+	GLfloat FloorShininess;
+
 	// Ambient Light
-	GLfloat LightAmbient[4];
-	GLfloat LightDiffuse[4];
-	GLfloat LightSpecular[4];
-	GLfloat LightPosition[4];
+	GLfloat AmbianceLightAmbient[4];
+	GLfloat AmbianceLightDiffuse[4];
+	GLfloat AmbianceLightSpecular[4];
+	GLfloat AmbianceLightPosition[4];
+
+	// Campfire Light
+	GLfloat CampfireAmbient[4];
+	GLfloat CampfireDiffuse[4];
+	GLfloat CampfireSpecular[4];
+	GLfloat CampfirePosition[4];
 };
 
