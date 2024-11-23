@@ -20,7 +20,7 @@ public:
 	void Draw3DSGrid(float width, float length);
 	void DrawAxis();
 	void DrawFloor();
-	void DrawHouse(float X, float Y);
+	void DrawHouse(float X, float Y, float Rotation);
 private:
 
 	bool	keys[256];		// Array usado para rotinas do teclado

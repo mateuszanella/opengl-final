@@ -109,7 +109,9 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 
 	DrawFloor();
 
-	DrawHouse(0.0f, 0.0f);
+	DrawHouse(0.0f, 0.0f, 0.0f);
+	DrawHouse(25.0f, 20.0f, 90.0f);
+	DrawHouse(25.0f, -20.0f, -90.0f);
 
 
 	
@@ -321,11 +323,12 @@ void CScene2::DrawFloor()
 	glPopMatrix();
 }
 
-void CScene2::DrawHouse(float X, float Y)
+void CScene2::DrawHouse(float X, float Y, float Rotation)
 {
 	glPushMatrix();
 
 	glTranslatef(X, 0.0f, Y);
+	glRotatef(Rotation, 0.0f, 1.0f, 0.0f);
 	pModel3DS_BaseHouse->Draw();
 
 	glPopMatrix();
