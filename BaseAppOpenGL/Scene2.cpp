@@ -121,23 +121,14 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 
 	DrawFloor();
 
-	glEnable(GL_FOG);
-
-	glFogfv(GL_FOG_COLOR, fogColor);
-
-	glHint(GL_FOG_HINT, GL_NICEST);
-	glFogf(GL_FOG_START, 35.0f);
-	glFogf(GL_FOG_END, 150.0f);
-
-	glFogi(GL_FOG_MODE, GL_EXP2);
-	glFogf(GL_FOG_DENSITY, 0.025f);
+	if (bDrawFog) 
+		SetFog(0.025f, 35.0f, 150.0f);
+	else
+		UnsetFog();
 
 	DrawHouse(0.0f, 0.0f, 0.0f);
 	DrawHouse(25.0f, 20.0f, 90.0f);
 	DrawHouse(25.0f, -20.0f, -90.0f);
-
-
-	
 
 	glDisable(GL_TEXTURE_2D);
 
@@ -246,10 +237,6 @@ void CScene2::KeyPressed(void) // Tratamento de teclas pressionadas
 	{
 		pCamera->moveGlob(0.0f, pCamera->Up[1], 0.0f);
 	}
-	else if (GetKeyState('F') & 0x80)
-	{
-		bShowAxis = !bShowAxis;
-	}
 	// Senão, interrompe movimento do Player
 	else
 	{
@@ -269,6 +256,14 @@ void CScene2::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 
 	case VK_SPACE:
 		pTimer->Init();
+		break;
+
+	case 'F':
+		bShowAxis = !bShowAxis;
+		break;
+
+	case 'G':
+		bDrawFog = !bDrawFog;
 		break;
 
 	case VK_RETURN:
@@ -355,6 +350,25 @@ void CScene2::DrawHouse(float X, float Y, float Rotation)
 	pModel3DS_BaseHouse->Draw();
 
 	glPopMatrix();
+}
+
+void CScene2::SetFog(float fDensity, float fStart, float fEnd)
+{
+	GLfloat fogColor[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+	glEnable(GL_FOG);
+
+	glFogfv(GL_FOG_COLOR, fogColor);
+	glHint(GL_FOG_HINT, GL_NICEST);
+	glFogf(GL_FOG_START, fStart);
+	glFogf(GL_FOG_END, fEnd);
+	glFogi(GL_FOG_MODE, GL_EXP2);
+	glFogf(GL_FOG_DENSITY, fDensity);
+}
+
+void CScene2::UnsetFog()
+{
+	glDisable(GL_FOG);
 }
 
 void CScene2::CreateSkyBox(float x, float y, float z,

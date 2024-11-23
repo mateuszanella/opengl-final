@@ -23,6 +23,9 @@ public:
 	void DrawFloor();
 	void DrawHouse(float X, float Y, float Rotation);
 
+	void SetFog(float fDensity, float fStart, float fEnd);
+	void UnsetFog();
+
 	void CreateSkyBox(float x, float y, float z,
 		float width, float height, float length,
 		CTexture* pTextures);
@@ -52,6 +55,7 @@ private:
 	bool bIsCameraFPS;		// Ativa modo de camera First Person Shooter (true) ou Third Person Shooter (false)
 
 	bool bShowAxis;			// Mostra e esconde os eixos X, Y e Z
+	bool bDrawFog;			// Habilita e desabilita o efeito de neblina
 
 	float fRenderPosY;
 	float fTimerPosY;
