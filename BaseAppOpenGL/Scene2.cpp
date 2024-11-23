@@ -5,6 +5,7 @@ CScene2::CScene2()
 	pCamera = NULL;
 	pTexto = NULL;
 	pTextures = NULL;
+	pModel3DS_BaseHouse = NULL;
 	
 	bIsWireframe = false;
 	bIsCameraFPS = true;
@@ -31,7 +32,10 @@ CScene2::CScene2()
 
 	// Carrega todas as texturas
 	pTextures = new CTexture();
-	pTextures->CreateTextureClamp(0, "../Scene2/floor_base.bmp");
+	pTextures->CreateTextureClamp(0, "../Scene2/BaseFloor.bmp");
+
+	pModel3DS_BaseHouse = new CModel_3DS();
+	pModel3DS_BaseHouse->Load("../Scene2/BaseHouse.3DS");
 }
 
 
@@ -101,27 +105,16 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// Habilita texturas
 	glEnable(GL_TEXTURE_2D);
 
-	// Desenha o chão
 	DrawFloor();
 
-	// Desabilita texturas
-	glDisable(GL_TEXTURE_2D);
-
-
-
-
-
-
-
-
+	DrawHouse(0.0f, 0.0f);
 
 
 	
 
-
+	glDisable(GL_TEXTURE_2D);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//                               DESENHA OS OBJETOS DA CENA (FIM)
@@ -319,11 +312,21 @@ void CScene2::DrawFloor()
 
 	glBegin(GL_QUADS);
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-100.0f, 0.0f, 100.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(100.0f, 0.0f, 100.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 0.0f, -100.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-100.0f, 0.0f, -100.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-50.0f, 0.0f, 50.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(50.0f, 0.0f, 50.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(50.0f, 0.0f, -50.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-50.0f, 0.0f, -50.0f);
 	glEnd();
+
+	glPopMatrix();
+}
+
+void CScene2::DrawHouse(float X, float Y)
+{
+	glPushMatrix();
+
+	glTranslatef(X, 0.0f, Y);
+	pModel3DS_BaseHouse->Draw();
 
 	glPopMatrix();
 }

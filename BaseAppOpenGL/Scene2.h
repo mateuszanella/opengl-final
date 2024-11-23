@@ -4,6 +4,7 @@
 #include "CTimer.h"
 #include "CTexto.h"
 #include "CCamera.h"
+#include "CModel_3DS.h"
 
 class CScene2 : public CSceneBaseClass
 {
@@ -19,6 +20,7 @@ public:
 	void Draw3DSGrid(float width, float length);
 	void DrawAxis();
 	void DrawFloor();
+	void DrawHouse(float X, float Y);
 private:
 
 	bool	keys[256];		// Array usado para rotinas do teclado
@@ -49,5 +51,6 @@ private:
 	float fRenderPosY;
 	float fTimerPosY;
 
+	CModel_3DS* pModel3DS_BaseHouse;
 };
 
