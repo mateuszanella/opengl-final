@@ -211,22 +211,22 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	glEnd();
 	glPopMatrix();
 
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(-10.0f, 0.5f, 10.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-5.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(5.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(5.0, 10.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-5.0, 10.0, 0.0);
+	//pTextures->ApplyTexture(10);
+	//glPushMatrix();
+	//glTranslatef(-10.0f, 0.5f, 10.0f);
+	//glBegin(GL_QUADS);
+	//glNormal3f(0.0f, 0.0f, 1.0f);
+	//glTexCoord2f(0.0f, 0.0f); glVertex3f(-5.0, 0.0, 0.0);
+	//glTexCoord2f(1.0f, 0.0f); glVertex3f(5.0, 0.0, 0.0);
+	//glTexCoord2f(1.0f, 1.0f); glVertex3f(5.0, 10.0, 0.0);
+	//glTexCoord2f(0.0f, 1.0f); glVertex3f(-5.0, 10.0, 0.0);
 
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 5.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -5.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 10.0, -5.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 10.0, 5.0);
-	glEnd();
-	glPopMatrix();
+	//glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 5.0);
+	//glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -5.0);
+	//glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 10.0, -5.0);
+	//glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 10.0, 5.0);
+	//glEnd();
+	//glPopMatrix();
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);

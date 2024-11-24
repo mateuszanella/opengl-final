@@ -42,6 +42,8 @@ CScene2::CScene2()
 
 	pTextures->CreateTextureClamp(6, "../Scene2/BaseFloor.bmp");
 
+	pTextures->CreateTextureTGA(7, "../Scene1/tree.tga");
+
 	pModel3DS_BaseHouse = new CModel_3DS();
 	pModel3DS_BaseHouse->Load("../Scene2/BaseHouse.3DS");
 
@@ -167,6 +169,8 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 	DrawHouse(0.0f, 0.0f, 0.0f);
 	DrawHouse(25.0f, 20.0f, 90.0f);
 	DrawHouse(25.0f, -20.0f, -90.0f);
+
+	DrawForest();
 
 	glDisable(GL_TEXTURE_2D);
 
@@ -518,6 +522,58 @@ void CScene2::SetupHouse2Light()
 	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, House2Exponent);
 
 	glEnable(GL_LIGHT2);
+}
+
+void CScene2::DrawForest()
+{
+	for (float x = 45.0f; x >= -45.0f; x -= 10.0f)
+	{
+		for (float z = 45.0f; z >= -45.0f; z -= 10.0f)
+		{
+			if (x >= 15.0f && x <= 35.0f && z >= 5.0f && z <= 25.0f)
+				continue;
+
+			if (x >= 15.0f && x <= 35.0f && z >= -25.0f && z <= -5.0f)
+				continue;
+
+			if (x >= -5.0f && x <= 5.0f && z >= -5.0f && z <= 5.0f)
+				continue;
+
+			DrawTree(x, z, 0.0f);
+		}
+	}
+}
+
+void CScene2::DrawTree(float X, float Z, float Rotation)
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.95f);
+
+	pTextures->ApplyTexture(7);
+	glPushMatrix();
+	glTranslatef(X, -0.2f, Z);
+	glRotatef(Rotation, 0.0f, 1.0f, 0.0f);
+	glBegin(GL_QUADS);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-5.0, 0.0, 0.0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(5.0, 0.0, 0.0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(5.0, 10.0, 0.0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-5.0, 10.0, 0.0);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 5.0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -5.0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 10.0, -5.0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 10.0, 5.0);
+
+	glEnd();
+	glPopMatrix();
+
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 }
 
 void CScene2::CreateSkyBox(float x, float y, float z,
