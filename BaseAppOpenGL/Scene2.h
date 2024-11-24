@@ -27,7 +27,8 @@ public:
 	void UnsetFog();
 
 	void SetupAmbientLight();
-	void SetupCampfireLight();
+	void SetupHouse1Light();
+	void SetupHouse2Light();
 
 	void CreateSkyBox(float x, float y, float z,
 		float width, float height, float length,
@@ -78,10 +79,22 @@ private:
 	GLfloat AmbianceLightSpecular[4];
 	GLfloat AmbianceLightPosition[4];
 
-	// Campfire Light
-	GLfloat CampfireAmbient[4];
-	GLfloat CampfireDiffuse[4];
-	GLfloat CampfireSpecular[4];
-	GLfloat CampfirePosition[4];
+	// House 1 Light
+	GLfloat House1Ambient[4];
+	GLfloat House1Diffuse[4];
+	GLfloat House1Specular[4];
+	GLfloat House1Position[4];
+	GLfloat House1Direction[3];
+	GLfloat House1Cutoff;
+	GLfloat House1Exponent;
+
+	// House 2 Light
+	GLfloat House2Ambient[4];
+	GLfloat House2Diffuse[4];
+	GLfloat House2Specular[4];
+	GLfloat House2Position[4];
+	GLfloat House2Direction[3];
+	GLfloat House2Cutoff;
+	GLfloat House2Exponent;
 };
 

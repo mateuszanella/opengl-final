@@ -50,16 +50,27 @@ CScene2::CScene2()
 	FloorSpecular[0] = 0.0f; FloorSpecular[1] = 0.0f; FloorSpecular[2] = 0.0f; FloorSpecular[3] = 1.0f;
 	FloorShininess   = 0.0f;
 
-
 	AmbianceLightAmbient[0]  = 0.0f; AmbianceLightAmbient[1]  = 0.0f; AmbianceLightAmbient[2]    = 0.0f; AmbianceLightAmbient[3]  = 1.0f;
 	AmbianceLightDiffuse[0]  = 0.8f; AmbianceLightDiffuse[1]  = 0.8f; AmbianceLightDiffuse[2]    = 1.0f; AmbianceLightDiffuse[3]  = 1.0f;
 	AmbianceLightSpecular[0] = 0.9f; AmbianceLightSpecular[1] = 0.9f; AmbianceLightSpecular[2]   = 1.0f; AmbianceLightSpecular[3] = 1.0f;
 	AmbianceLightPosition[0] = 0.0f; AmbianceLightPosition[1] = 100.0f; AmbianceLightPosition[2] = 0.0f; AmbianceLightPosition[3] = 1.0f;
 
-	CampfireAmbient[0]  = 0.2f; CampfireAmbient[1]   = 0.1f; CampfireAmbient[2]  = 0.0f; CampfireAmbient[3]  = 1.0f;
-	CampfireDiffuse[0]  = 1.0f; CampfireDiffuse[1]   = 0.5f; CampfireDiffuse[2]  = 0.0f; CampfireDiffuse[3]  = 1.0f;
-	CampfireSpecular[0] = 1.0f; CampfireSpecular[1]  = 0.5f; CampfireSpecular[2] = 0.0f; CampfireSpecular[3] = 1.0f;
-	CampfirePosition[0] = 20.0f; CampfirePosition[1] = 0.5f; CampfirePosition[2] = 0.0f; CampfirePosition[3] = 1.0f;
+	House1Ambient[0]   = 0.3f; House1Ambient[1]   = 0.2f; House1Ambient[2]    = 0.0f; House1Ambient[3]   = 1.0f;
+	House1Diffuse[0]   = 1.0f; House1Diffuse[1]   = 0.8f; House1Diffuse[2]    = 0.0f; House1Diffuse[3]   = 1.0f;
+	House1Specular[0]  = 1.0f; House1Specular[1]  = 0.8f; House1Specular[2]   = 0.0f; House1Specular[3]  = 1.0f;
+	House1Position[0]  = 25.0f; House1Position[1] = 3.0f; House1Position[2]   = 16.0f; House1Position[3] = 1.0f;
+	House1Direction[0] = 0.0f; House1Direction[1] = -1.0f; House1Direction[2] = 0.0f;
+	House1Cutoff = 45.0f;
+	House1Exponent = 10.0f;
+
+	// Same thing, but on opposite side
+	House2Ambient[0]   = 0.3f; House2Ambient[1]   = 0.2f; House2Ambient[2]    = 0.0f; House2Ambient[3]    = 1.0f;
+	House2Diffuse[0]   = 1.0f; House2Diffuse[1]   = 0.8f; House2Diffuse[2]    = 0.0f; House2Diffuse[3]    = 1.0f;
+	House2Specular[0]  = 1.0f; House2Specular[1]  = 0.8f; House2Specular[2]   = 0.0f; House2Specular[3]   = 1.0f;
+	House2Position[0]  = 25.0f; House2Position[1] = 3.0f; House2Position[2]   = -16.0f; House2Position[3] = 1.0f;
+	House2Direction[0] = 0.0f; House2Direction[1] = -1.0f; House2Direction[2] = 0.0f;
+	House2Cutoff = 45.0f;
+	House2Exponent = 10.0f;
 }
 
 
@@ -135,10 +146,12 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 	glEnable(GL_LIGHTING);
 
 	SetupAmbientLight();
-	SetupCampfireLight();
+	SetupHouse1Light();
+	SetupHouse2Light();
 
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
 
 	CreateSkyBox(0.0f, 100.0f, 0.0f,
 		1000.0f, 1000.0f, 1000.0f,
@@ -438,6 +451,18 @@ void CScene2::UnsetFog()
 
 void CScene2::SetupAmbientLight()
 {
+	if (bDrawLightObjects) {
+		glDisable(GL_LIGHTING);
+
+		glPushMatrix();
+		glTranslatef(AmbianceLightPosition[0], AmbianceLightPosition[1], AmbianceLightPosition[2]);
+		glColor3f(AmbianceLightDiffuse[0], AmbianceLightDiffuse[1], AmbianceLightDiffuse[2]);
+		glutSolidSphere(5.0f, 10, 10);
+		glPopMatrix();
+
+		glEnable(GL_LIGHTING);
+	}
+
 	glLightfv(GL_LIGHT0, GL_AMBIENT,  AmbianceLightAmbient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE,  AmbianceLightDiffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, AmbianceLightSpecular);
@@ -445,27 +470,55 @@ void CScene2::SetupAmbientLight()
 	glEnable(GL_LIGHT0);
 }
 
-void CScene2::SetupCampfireLight()
+void CScene2::SetupHouse1Light()
 {
-	//if (bDrawLightObjects) {
-	//	glDisable(GL_LIGHTING);
+	if (bDrawLightObjects) {
+		glDisable(GL_LIGHTING);
 
-	//	glPushMatrix();
-	//	glTranslatef(CampfirePosition[0], 1.0f, CampfirePosition[2]);
-	//	glColor3f(CampfireDiffuse[0], CampfireDiffuse[1], CampfireDiffuse[2]);
-	//	glutSolidSphere(0.5f, 10, 10);
-	//	glPopMatrix();
+		glPushMatrix();
+		glTranslatef(House1Position[0], House1Position[1], House1Position[2]);
+		glColor3f(House1Diffuse[0], House1Diffuse[1], House1Diffuse[2]);
+		glutSolidSphere(0.3f, 10, 10);
+		glPopMatrix();
 
-	//	glEnable(GL_LIGHTING);
-	//}
+		glEnable(GL_LIGHTING);
+	}
 
-	glLightfv(GL_LIGHT1, GL_AMBIENT,  CampfireAmbient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE,  CampfireDiffuse);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, CampfireSpecular);
-	glLightfv(GL_LIGHT1, GL_POSITION, CampfirePosition);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, House1Ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, House1Diffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, House1Specular);
+	glLightfv(GL_LIGHT1, GL_POSITION, House1Position);
+	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, House1Direction);
+	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, House1Cutoff);
+	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, House1Exponent);
+
 	glEnable(GL_LIGHT1);
 }
 
+void CScene2::SetupHouse2Light()
+{
+	if (bDrawLightObjects) {
+		glDisable(GL_LIGHTING);
+
+		glPushMatrix();
+		glTranslatef(House2Position[0], House2Position[1], House2Position[2]);
+		glColor3f(House2Diffuse[0], House2Diffuse[1], House2Diffuse[2]);
+		glutSolidSphere(0.3f, 10, 10);
+		glPopMatrix();
+
+		glEnable(GL_LIGHTING);
+	}
+
+	glLightfv(GL_LIGHT2, GL_AMBIENT, House2Ambient);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, House2Diffuse);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, House2Specular);
+	glLightfv(GL_LIGHT2, GL_POSITION, House2Position);
+	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, House2Direction);
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, House2Cutoff);
+	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, House2Exponent);
+
+	glEnable(GL_LIGHT2);
+}
 
 void CScene2::CreateSkyBox(float x, float y, float z,
 	float width, float height, float length,
