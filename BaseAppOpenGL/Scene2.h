@@ -22,6 +22,9 @@ public:
 
 	void DrawFloor();
 	void DrawHouse(float X, float Y, float Rotation);
+	void DrawTree(float X, float Y, float Rotation);
+	void DrawForest();
+	void DrawBox(float X, float Y, float Z, float Size, float Rotation);
 
 	void SetFog(float fDensity, float fStart, float fEnd);
 	void UnsetFog();
@@ -29,9 +32,6 @@ public:
 	void SetupAmbientLight();
 	void SetupHouse1Light();
 	void SetupHouse2Light();
-
-	void DrawTree(float X, float Y, float Rotation);
-	void DrawForest();
 
 	void CreateSkyBox(float x, float y, float z,
 		float width, float height, float length,

@@ -42,7 +42,9 @@ CScene2::CScene2()
 
 	pTextures->CreateTextureClamp(6, "../Scene2/BaseFloor.bmp");
 
-	pTextures->CreateTextureTGA(7, "../Scene1/tree.tga");
+	pTextures->CreateTextureTGA(7, "../Scene2/tree.tga");
+
+	pTextures->CreateTextureMipMap(8, "../Scene2/crate.bmp");
 
 	pModel3DS_BaseHouse = new CModel_3DS();
 	pModel3DS_BaseHouse->Load("../Scene2/BaseHouse.3DS");
@@ -171,6 +173,16 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 	DrawHouse(25.0f, -20.0f, -90.0f);
 
 	DrawForest();
+
+	DrawBox(29.0f, 0.5f, 20.0f, 1.0f, 0.0f);
+	DrawBox(29.0f, 1.5f, 20.0f, 1.0f, 45.0f);
+
+	DrawBox(33.0f, 0.5f, -20.0f, 1.0f, 0.0f);
+	DrawBox(33.0f, 1.5f, -20.0f, 1.0f, 45.0f);
+
+	DrawBox(25.0f, 1.0f, 0.0f, 2.0f, 0.0f);
+	DrawBox(25.0f, 3.0f, 0.0f, 2.0f, 45.0f);
+
 
 	glDisable(GL_TEXTURE_2D);
 
@@ -542,6 +554,64 @@ void CScene2::DrawForest()
 			DrawTree(x, z, 0.0f);
 		}
 	}
+}
+
+void CScene2::DrawBox(float X, float Y, float Z, float Size, float Rotation)
+{
+	pTextures->ApplyTexture(8);
+
+	glPushMatrix();
+	glTranslatef(X, Y, Z);
+	glRotatef(Rotation, 0.0f, 1.0f, 0.0f);
+	glScalef(Size, Size, Size);
+
+	glBegin(GL_QUADS);
+
+	// Front
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
+
+	// Back
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	glTexCoord2d(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
+
+	// Top
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2d(0.0f, 0.0f); glVertex3f(0.5f, 0.5f, 0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
+
+	// Bottom
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, -0.5f, 0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
+
+	// Right
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glTexCoord2d(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
+
+	// Left
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
+
+	glEnd();
+
+	glPopMatrix();
 }
 
 void CScene2::DrawTree(float X, float Z, float Rotation)
