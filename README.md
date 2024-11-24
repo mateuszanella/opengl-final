@@ -1,10 +1,9 @@
-### Trabalho de Computação gráfica
+### Trabalho Final de Computação gráfica
 
-Para executar o projeto, abra-o com o Visual Studio e execute o programa, ou execute o arquivo `Debug/BaseAppOpenGL.exe`
+Alunos: Felipe T. Malacarne e Mateus R. Zanella
 
-Exercícios:
+Na cena principal existem alguns comandos especiais para melhor visualização da cena:
 
-Cena 4 - Snowman
-Cena 5 - Cubos
-Cena 6 - Texturas
-Cena 7 - Casa
+F - Habilita ou desabilita o eixo X, Y, Z da cena vazia.
+G - Habilita ou desabilita a neblina.
+L - Habilita ou desabilita objetos que representam as luzes na cena.

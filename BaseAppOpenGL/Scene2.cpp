@@ -67,7 +67,6 @@ CScene2::CScene2()
 	House1Cutoff = 45.0f;
 	House1Exponent = 10.0f;
 
-	// Same thing, but on opposite side
 	House2Ambient[0]   = 0.3f; House2Ambient[1]   = 0.2f; House2Ambient[2]    = 0.0f; House2Ambient[3]    = 1.0f;
 	House2Diffuse[0]   = 1.0f; House2Diffuse[1]   = 0.8f; House2Diffuse[2]    = 0.0f; House2Diffuse[3]    = 1.0f;
 	House2Specular[0]  = 1.0f; House2Specular[1]  = 0.8f; House2Specular[2]   = 0.0f; House2Specular[3]   = 1.0f;
