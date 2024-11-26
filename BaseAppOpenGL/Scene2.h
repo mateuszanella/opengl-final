@@ -30,6 +30,8 @@ public:
 	void UnsetFog();
 
 	void SetupAmbientLight();
+	void UnsetAmbientLight();
+
 	void SetupHouse1Light();
 	void SetupHouse2Light();
 
@@ -64,6 +66,7 @@ private:
 	bool bShowAxis;			// Mostra e esconde os eixos X, Y e Z
 	bool bDrawFog;			// Habilita e desabilita o efeito de neblina
 	bool bDrawLightObjects; // Habilita e desabilita a visualização dos objetos de luz
+	bool bUseAmbientLight;	// Habilita e desabilita a luz ambiente
 
 	float fRenderPosY;
 	float fTimerPosY;

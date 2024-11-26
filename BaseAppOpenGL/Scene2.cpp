@@ -13,6 +13,7 @@ CScene2::CScene2()
 	bShowAxis = false;
 	bDrawFog = true;
 	bDrawLightObjects = false;
+	bUseAmbientLight = true;
 
 	iFPS = 0;
 	iFrames = 0;
@@ -128,7 +129,7 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 	pCamera->setView();
 
 	if (bShowAxis) {
-		Draw3DSGrid(20.0f, 20.0f);
+		Draw3DSGrid(50.0f, 50.0f);
 		DrawAxis();
 	}
 
@@ -148,13 +149,13 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 
-	SetupAmbientLight();
+	if (bUseAmbientLight)
+		SetupAmbientLight();
+	else
+		UnsetAmbientLight();
+
 	SetupHouse1Light();
 	SetupHouse2Light();
-
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
-	glEnable(GL_LIGHT2);
 
 	CreateSkyBox(0.0f, 100.0f, 0.0f,
 		1000.0f, 1000.0f, 1000.0f,
@@ -204,7 +205,7 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 	glColor3f(1.0f, 1.0f, 0.0f);
 
 
-	glRasterPos2f(10.0f, -30.0f);	// Posicionando o texto na tela
+	glRasterPos2f(10.0f, -40.0f);	// Posicionando o texto na tela
 	if (!bIsWireframe) {
 		pTexto->glPrint("[TAB]  Modo LINE"); // Imprime texto na tela
 	}
@@ -212,7 +213,7 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 		pTexto->glPrint("[TAB]  Modo FILL");
 	}
 
-	glRasterPos2f(10.0f, -20.0f);
+	glRasterPos2f(10.0f, -30.0f);
 	if (!bShowAxis) {
 		pTexto->glPrint("[F]    Mostrar Eixos");
 	}
@@ -220,7 +221,7 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 		pTexto->glPrint("[F]    Esconder Eixos");
 	}
 
-	glRasterPos2f(10.0f, -10.0f);
+	glRasterPos2f(10.0f, -20.0f);
 	if (!bDrawFog) {
 		pTexto->glPrint("[G]    Habilitar Fog");
 	}
@@ -228,12 +229,20 @@ int CScene2::DrawGLScene(void)	// Fun��o que desenha a cena
 		pTexto->glPrint("[G]    Desabilitar Fog");
 	}
 
-	glRasterPos2f(10.0f, 0.0f);
+	glRasterPos2f(10.0f, -10.0f);
 	if (!bDrawLightObjects) {
 		pTexto->glPrint("[L]    Habilitar Objetos de Luz");
 	}
 	else {
 		pTexto->glPrint("[L]    Desabilitar Objetos de Luz");
+	}
+
+	glRasterPos2f(10.0f, 0.0f);
+	if (!bDrawLightObjects) {
+		pTexto->glPrint("[K]    Habilitar Luz Ambiente");
+	}
+	else {
+		pTexto->glPrint("[K]    Desabilitar Luz Ambiente");
 	}
 
 	//// Camera LookAt
@@ -340,6 +349,10 @@ void CScene2::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 
 	case 'G':
 		bDrawFog = !bDrawFog;
+		break;
+
+	case 'K':
+		bUseAmbientLight = !bUseAmbientLight;
 		break;
 
 	case 'L':
@@ -466,7 +479,7 @@ void CScene2::UnsetFog()
 
 void CScene2::SetupAmbientLight()
 {
-	if (bDrawLightObjects) {
+	if (bDrawLightObjects && bUseAmbientLight) {
 		glDisable(GL_LIGHTING);
 
 		glPushMatrix();
@@ -483,6 +496,11 @@ void CScene2::SetupAmbientLight()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, AmbianceLightSpecular);
 	glLightfv(GL_LIGHT0, GL_POSITION, AmbianceLightPosition);
 	glEnable(GL_LIGHT0);
+}
+
+void CScene2::UnsetAmbientLight()
+{
+	glDisable(GL_LIGHT0);
 }
 
 void CScene2::SetupHouse1Light()
