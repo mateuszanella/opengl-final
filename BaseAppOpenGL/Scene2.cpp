@@ -44,7 +44,7 @@ CScene2::CScene2()
 
 	pTextures->CreateTextureTGA(7, "../Scene2/tree.tga");
 
-	pTextures->CreateTextureMipMap(8, "../Scene2/crate.bmp");
+	pTextures->CreateTextureMipMap(8, "../Scene2/crate.jpg");
 
 	pModel3DS_BaseHouse = new CModel_3DS();
 	pModel3DS_BaseHouse->Load("../Scene2/BaseHouse.3DS");
